@@ -4,29 +4,75 @@
 		const BUTTONS = document.getElementsByClassName('globtechnic-slider__button');
 		const DOTS_BOX = document.getElementsByClassName('globtechnic-slider__dots');
 		const TEXT_BOXES = document.getElementsByClassName('globtechnic-slider__slide-text');
-		console.log(TEXT_BOXES);
+
+		let textsData = [];
+
+		function setTextOnSlide(index) {
+			let currentSlide = index;
+			let infoBox = document.querySelector('.globtechnic-slider__content');
+			let title = infoBox.querySelector('.globtechnic-slider__information-title');
+			let subtitle = infoBox.querySelector('.globtechnic-slider__information-subtitle');
+			title.innerHTML = textsData[currentSlide].title;
+			subtitle.innerHTML = textsData[currentSlide].subtitle;
+		}
+
+		function getAndRemoveSlidesText() {
+			function getSlidesTexts() {
+				let newObj = {};
+				for (let i = 0; i < TEXT_BOXES.length; i++) {
+					let texts = TEXT_BOXES[i].getElementsByTagName('p');
+					let title, subtitle;
+					for (let p of texts) {
+						if (p.getAttribute('text-type') === 'title') {
+							title = p.innerText;
+						}
+						if (p.getAttribute('text-type') === 'subtitle') {
+							subtitle = p.innerText;
+						}
+					}
+					newObj[i] = { title: `${title}`, subtitle: `${subtitle}` };
+				}
+				removeSlidesText();
+				return newObj;
+			}
+			function removeSlidesText() {
+				let clonedTextBoxes = Array.from(TEXT_BOXES);
+				for (let box of clonedTextBoxes) {
+					box.remove();
+				}
+			}
+
+			function saveTextData(data) {
+				let textsArray = data;
+				textsData = textsArray;
+			}
+			return saveTextData(getSlidesTexts());
+		}
 
 		// Function to handle navigation button clicks
 		function handleNavButtons(event) {
 			let currentSlide = getCurrentSlide();
 			let buttonType = event.target.getAttribute('move-to');
-			if (typeof buttonType == 'string' && buttonType.length > 1) {
-				if (buttonType == 'next') {
+			if (typeof buttonType === 'string' && buttonType.length > 1) {
+				if (buttonType === 'next') {
 					SLIDES[currentSlide].classList.remove('active');
-					currentSlide == SLIDES.length - 1 ? (currentSlide = 0) : currentSlide++;
+					currentSlide === SLIDES.length - 1 ? (currentSlide = 0) : currentSlide++;
 					SLIDES[currentSlide].classList.add('active');
 					updateDots(currentSlide);
+					setTextOnSlide(currentSlide);
 				}
-				if (buttonType == 'prev') {
+				if (buttonType === 'prev') {
 					SLIDES[currentSlide].classList.remove('active');
-					currentSlide == 0 ? (currentSlide = SLIDES.length - 1) : currentSlide--;
+					currentSlide === 0 ? (currentSlide = SLIDES.length - 1) : currentSlide--;
 					SLIDES[currentSlide].classList.add('active');
 					updateDots(currentSlide);
+					setTextOnSlide(currentSlide);
 				}
-			} else {
+			} else if (buttonType.length == 1) {
 				SLIDES[currentSlide].classList.remove('active');
 				SLIDES[parseInt(buttonType)].classList.add('active');
 				updateDots(parseInt(buttonType));
+				setTextOnSlide(parseInt(buttonType));
 			}
 		}
 
@@ -56,7 +102,9 @@
 		// Function to set a random slide as active
 		function setRandomSlide() {
 			let x = Math.floor(Math.random() * SLIDES.length);
-			return SLIDES[x].classList.add('active');
+			SLIDES[x].classList.add('active');
+			getAndRemoveSlidesText();
+			setTextOnSlide(x);
 		}
 
 		// Function to get the index of the current active slide
@@ -72,6 +120,7 @@
 		for (let button of BUTTONS) {
 			button.addEventListener('click', e => handleNavButtons(e));
 		}
+
 		// Setting a random slide initially
 		setRandomSlide();
 		// Generating dots for slide navigation
