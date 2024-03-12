@@ -1,17 +1,17 @@
 {
 	function globtechnicSlider() {
+		const SLIDER = document.getElementsByClassName('globtechnic-slider')[0];
 		const SLIDES = document.getElementsByClassName('globtechnic-slider__slide');
 		const BUTTONS = document.getElementsByClassName('globtechnic-slider__button');
 		const DOTS_BOX = document.getElementsByClassName('globtechnic-slider__dots');
 		const TEXT_BOXES = document.getElementsByClassName('globtechnic-slider__slide-text');
 
 		let textsData = [];
+		let touchPositions = [];
 
 		function setSliderHeight() {
-			const SLIDER = document.getElementsByClassName('globtechnic-slider')[0];
 			let headerHeight = document.getElementById('header').offsetHeight;
 			let sliderHeight = window.innerHeight - headerHeight;
-			console.log(headerHeight, sliderHeight, SLIDER);
 			SLIDER.setAttribute('style', `--globtechnic-slider__height: ${sliderHeight}px;`);
 		}
 
@@ -84,6 +84,22 @@
 			}
 		}
 
+		function handleSwipe(event) {
+			let currentX = event.changedTouches[0].screenX;
+			touchPositions.push(currentX);
+
+			if (touchPositions.length > 1) {
+				let prevX = touchPositions[touchPositions.length - 2];
+				if (currentX > prevX) {
+					console.log('gest w prawo');
+				} else if (currentX < prevX) {
+					console.log('gest w lewo');
+				}
+			}
+		}
+
+		function changeSlide() {}
+
 		// Function to update the dots navigation
 		function updateDots(index) {
 			let dots = document.getElementsByClassName('globtechnic-slider__dot');
@@ -123,22 +139,17 @@
 				}
 			}
 		}
-
-		// Adding event listeners to navigation buttons
 		for (let button of BUTTONS) {
 			button.addEventListener('click', e => handleNavButtons(e));
 		}
-		//set slider height
+
+		SLIDER.addEventListener('touchmove', e => handleSwipe(e));
+
 		setSliderHeight();
-		// Setting a random slide initially
 		setRandomSlide();
-		// Generating dots for slide navigation
 		generateDots();
 	}
-	// Event listener for when the DOM content with page-index class is loaded
 	window.addEventListener('DOMContentLoaded', function () {
-		if (document.body.classList.contains('page-index') || document.body.classList.contains('elementor-editor-active')) {
-			globtechnicSlider();
-		}
+		globtechnicSlider();
 	});
 }

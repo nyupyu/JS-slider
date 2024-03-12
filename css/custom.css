@@ -109,6 +109,10 @@ ul {
 }
 
 /* contact and e-mail on top nav header */
+.header-nav {
+	background: rgba(0, 0, 0, 0.4);
+}
+
 .header-nav .text-center {
 	display: none;
 }
@@ -192,6 +196,7 @@ ul {
 /* header */
 #header {
 	color: var(--font-color__light);
+	text-shadow: var(--box-shadow__power) var(--font-color__dark);
 }
 #header .header-nav {
 	padding: 8px 0;
