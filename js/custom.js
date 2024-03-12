@@ -7,6 +7,14 @@
 
 		let textsData = [];
 
+		function setSliderHeight() {
+			const SLIDER = document.getElementsByClassName('globtechnic-slider')[0];
+			let headerHeight = document.getElementById('header').offsetHeight;
+			let sliderHeight = window.innerHeight - headerHeight;
+			console.log(headerHeight, sliderHeight, SLIDER);
+			SLIDER.setAttribute('style', `--globtechnic-slider__height: ${sliderHeight}px;`);
+		}
+
 		function setTextOnSlide(index) {
 			let currentSlide = index;
 			let infoBox = document.querySelector('.globtechnic-slider__content');
@@ -120,7 +128,8 @@
 		for (let button of BUTTONS) {
 			button.addEventListener('click', e => handleNavButtons(e));
 		}
-
+		//set slider height
+		setSliderHeight();
 		// Setting a random slide initially
 		setRandomSlide();
 		// Generating dots for slide navigation
@@ -128,7 +137,7 @@
 	}
 	// Event listener for when the DOM content with page-index class is loaded
 	window.addEventListener('DOMContentLoaded', function () {
-		if (document.body.classList.contains('page-index')) {
+		if (document.body.classList.contains('page-index') || document.body.classList.contains('elementor-editor-active')) {
 			globtechnicSlider();
 		}
 	});
